@@ -35,4 +35,28 @@ public class BizException extends RuntimeException {
         this.code = responseCode.getCode();
         this.message = message;
     }
+
+    public BizException(String message, Throwable cause) {
+        super(message, cause);
+        this.code = ResponseCodeEnum.FAIL.getCode();
+        this.message = message;
+    }
+
+    public BizException(Integer code, String message, Throwable cause) {
+        super(message, cause);
+        this.code = code;
+        this.message = message;
+    }
+
+    public BizException(ResponseCodeEnum responseCode, Throwable cause) {
+        super(responseCode.getMessage(), cause);
+        this.code = responseCode.getCode();
+        this.message = responseCode.getMessage();
+    }
+
+    public BizException(ResponseCodeEnum responseCode, String message, Throwable cause) {
+        super(message, cause);
+        this.code = responseCode.getCode();
+        this.message = message;
+    }
 }

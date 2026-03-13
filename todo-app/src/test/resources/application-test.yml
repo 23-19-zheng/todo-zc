@@ -1,0 +1,36 @@
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=MySQL
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+  redis:
+    host: localhost
+    port: 6379
+    password:
+    database: 0
+
+logging:
+  level:
+    root: info
+    com.todo: debug
+
+# JWT配置
+jwt:
+  secret: test-jwt-secret-key-must-be-at-least-256-bits-long-for-testing
+  access-token-expiration: 3600000  # 1小时
+  refresh-token-expiration: 86400000  # 1天
+  header: Authorization
+  prefix: "Bearer "
+
+# MyBatis-Plus配置
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+
+# Swagger配置
+swagger:
+  enabled: false

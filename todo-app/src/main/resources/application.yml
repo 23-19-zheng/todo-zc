@@ -12,6 +12,11 @@ spring:
     time-zone: GMT+8
     serialization:
       write-dates-as-timestamps: false
+  mvc:
+    throw-exception-if-no-handler-found: true
+  web:
+    resources:
+      add-mappings: false
 
 # MyBatis-Plus配置
 mybatis-plus:
@@ -19,7 +24,7 @@ mybatis-plus:
   type-aliases-package: com.todo.infrastructure.entity
   configuration:
     map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
   global-config:
     db-config:
       id-type: auto

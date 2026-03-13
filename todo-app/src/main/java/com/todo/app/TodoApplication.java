@@ -13,7 +13,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 @EnableAsync
 @EnableScheduling
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"com.todo.app", "com.todo.infrastructure", "com.todo.domain"})
 @MapperScan("com.todo.infrastructure.mapper")
 public class TodoApplication {
 

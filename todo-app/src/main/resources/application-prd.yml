@@ -1,0 +1,51 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${DB_HOST}:3306/${DB_NAME:todo_db}?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=Asia/Shanghai&allowMultiQueries=true
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    hikari:
+      minimum-idle: 10
+      maximum-pool-size: 50
+      idle-timeout: 30000
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      leak-detection-threshold: 60000
+
+  redis:
+    host: ${REDIS_HOST}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASSWORD}
+    database: 0
+    timeout: 5000
+    lettuce:
+      pool:
+        max-active: 50
+        max-wait: -1
+        max-idle: 20
+        min-idle: 5
+
+logging:
+  level:
+    root: warn
+    com.todo: info
+
+# JWT配置
+jwt:
+  secret: ${JWT_SECRET}
+  access-token-expiration: 3600000  # 1小时
+  refresh-token-expiration: 86400000  # 1天
+  header: Authorization
+  prefix: "Bearer "
+
+# Swagger配置 - 生产环境禁用
+swagger:
+  enabled: false
+
+# MyBatis-Plus配置 - 生产环境不打印SQL
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
