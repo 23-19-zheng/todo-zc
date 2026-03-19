@@ -3,7 +3,11 @@
     "allow": [
       "Bash(tree:*)",
       "Bash(mvn clean:*)",
-      "Bash(head:*)"
+      "Bash(head:*)",
+      "Bash(mvn:*)",
+      "Bash(brew list:*)",
+      "Bash(brew:*)",
+      "Bash(brew install:*)"
     ]
   }
 }
