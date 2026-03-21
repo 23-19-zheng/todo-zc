@@ -54,7 +54,7 @@ class AuthControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(0))
+                .andExpect(jsonPath("$.code").value(1000))
                 .andExpect(jsonPath("$.data.token").value("token"));
     }
 
@@ -102,7 +102,7 @@ class AuthControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(0))
+                .andExpect(jsonPath("$.code").value(1000))
                 .andExpect(jsonPath("$.data.token").value("token"));
     }
 

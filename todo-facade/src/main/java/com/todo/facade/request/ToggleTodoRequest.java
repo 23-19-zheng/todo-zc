@@ -5,24 +5,18 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 /**
- * 更新待办请求
+ * 切换待办状态请求
  */
 @Data
-@ApiModel(description = "更新待办请求")
-public class UpdateTodoRequest implements Serializable {
+@ApiModel(description = "切换待办状态请求")
+public class ToggleTodoRequest implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "待办ID", required = true)
     @NotBlank(message = "待办ID不能为空")
     private String id;
-
-    @ApiModelProperty(value = "待办标题", required = true)
-    @NotBlank(message = "待办标题不能为空")
-    @Size(min = 1, max = 200, message = "待办标题长度必须在1-200个字符之间")
-    private String title;
 }

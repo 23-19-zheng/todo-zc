@@ -6,6 +6,9 @@ import com.todo.domain.model.Todo;
 import com.todo.domain.service.PreferenceDomainService;
 import com.todo.domain.service.TodoDomainService;
 import com.todo.facade.request.CreateTodoRequest;
+import com.todo.facade.response.TodoListVO;
+import com.todo.facade.response.TodoVO;
+import com.todo.facade.response.ClearCompletedVO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,6 +23,8 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
@@ -60,18 +65,17 @@ class TodoServiceTest {
         todoPage.setRecords(new ArrayList<>());
         todoPage.setTotal(0);
 
-        when(preferenceDomainService.getFilterPreference(userId)).thenReturn("all");
         when(todoDomainService.getTodoList(userId, filter, page, pageSize)).thenReturn(todoPage);
         when(todoDomainService.countTotal(userId)).thenReturn(0L);
         when(todoDomainService.countActive(userId)).thenReturn(0L);
         when(todoDomainService.countCompleted(userId)).thenReturn(0L);
 
-        var result = todoService.getTodoList(userId, filter, page, pageSize);
+        TodoListVO result = todoService.getTodoList(userId, filter, page, pageSize);
 
         assertNotNull(result);
-        assertEquals(0, result.getTotal());
-        assertEquals(0, result.getActive());
-        assertEquals(0, result.getCompleted());
+        assertEquals(0L, result.getTotal().longValue());
+        assertEquals(0L, result.getActive().longValue());
+        assertEquals(0L, result.getCompleted().longValue());
     }
 
     @Test
@@ -84,7 +88,7 @@ class TodoServiceTest {
         Todo todo = createTestTodo();
         when(todoDomainService.createTodo(userId, "新的待办")).thenReturn(todo);
 
-        var result = todoService.createTodo(userId, request);
+        TodoVO result = todoService.createTodo(userId, request);
 
         assertNotNull(result);
         assertEquals("1709800000000_abc123", result.getId());
@@ -106,8 +110,10 @@ class TodoServiceTest {
 
         when(todoDomainService.updateTodoTitle(todoId, userId, newTitle)).thenReturn(todo);
 
-        var result = todoService.updateTodo(userId, todoId,
-                new com.todo.facade.request.UpdateTodoRequest() {{ setTitle(newTitle); }});
+        com.todo.facade.request.UpdateTodoRequest request = new com.todo.facade.request.UpdateTodoRequest();
+        request.setId(todoId);
+        request.setTitle(newTitle);
+        TodoVO result = todoService.updateTodo(userId, todoId, request);
 
         assertNotNull(result);
         assertEquals(newTitle, result.getTitle());
@@ -125,7 +131,7 @@ class TodoServiceTest {
 
         when(todoDomainService.toggleTodo(todoId, userId)).thenReturn(todo);
 
-        var result = todoService.toggleTodo(userId, todoId);
+        TodoVO result = todoService.toggleTodo(userId, todoId);
 
         assertNotNull(result);
         assertTrue(result.getCompleted());
@@ -152,7 +158,7 @@ class TodoServiceTest {
 
         when(todoDomainService.clearCompleted(userId)).thenReturn(5);
 
-        var result = todoService.clearCompleted(userId);
+        ClearCompletedVO result = todoService.clearCompleted(userId);
 
         assertNotNull(result);
         assertEquals(5, result.getClearedCount());

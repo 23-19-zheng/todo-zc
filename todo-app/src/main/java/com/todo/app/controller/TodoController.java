@@ -3,13 +3,10 @@ package com.todo.app.controller;
 import com.todo.app.service.TodoService;
 import com.todo.common.context.UserContext;
 import com.todo.common.constant.CommonConstants;
-import com.todo.facade.request.CreateTodoRequest;
-import com.todo.facade.request.SyncTodoRequest;
-import com.todo.facade.request.UpdateTodoRequest;
+import com.todo.facade.request.*;
 import com.todo.facade.response.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -32,11 +29,10 @@ public class TodoController {
      * 获取待办列表
      */
     @ApiOperation("获取待办列表")
-    @GetMapping
-    public ApiResponse<TodoListVO> getTodoList(
-            @ApiParam("筛选条件: all/active/completed") @RequestParam(required = false) String filter,
-            @ApiParam("页码") @RequestParam(defaultValue = "1") int page,
-            @ApiParam("每页数量") @RequestParam(defaultValue = "50") int pageSize) {
+    @PostMapping("/getList")
+    public ApiResponse<TodoListVO> getTodoList(@RequestBody GetTodoListRequest request) {
+        int page = request.getPage() != null ? request.getPage() : 1;
+        int pageSize = request.getPageSize() != null ? request.getPageSize() : 50;
 
         // 限制pageSize最大值
         if (pageSize > CommonConstants.MAX_PAGE_SIZE) {
@@ -44,8 +40,8 @@ public class TodoController {
         }
 
         Long userId = UserContext.getCurrentUserId();
-        log.debug("获取待办列表: userId={}, filter={}, page={}, pageSize={}", userId, filter, page, pageSize);
-        TodoListVO response = todoService.getTodoList(userId, filter, page, pageSize);
+        log.debug("获取待办列表: userId={}, filter={}, page={}, pageSize={}", userId, request.getFilter(), page, pageSize);
+        TodoListVO response = todoService.getTodoList(userId, request.getFilter(), page, pageSize);
         return ApiResponse.success(response);
     }
 
@@ -53,11 +49,11 @@ public class TodoController {
      * 获取单个待办
      */
     @ApiOperation("获取单个待办")
-    @GetMapping("/{id}")
-    public ApiResponse<TodoVO> getTodo(@PathVariable String id) {
+    @PostMapping("/getOne")
+    public ApiResponse<TodoVO> getTodo(@Valid @RequestBody GetTodoRequest request) {
         Long userId = UserContext.getCurrentUserId();
-        log.debug("获取待办详情: userId={}, todoId={}", userId, id);
-        TodoVO response = todoService.getTodo(userId, id);
+        log.debug("获取待办详情: userId={}, todoId={}", userId, request.getId());
+        TodoVO response = todoService.getTodo(userId, request.getId());
         return ApiResponse.success(response);
     }
 
@@ -65,7 +61,7 @@ public class TodoController {
      * 创建待办
      */
     @ApiOperation("创建待办")
-    @PostMapping
+    @PostMapping("/create")
     public ApiResponse<TodoVO> createTodo(@Valid @RequestBody CreateTodoRequest request) {
         Long userId = UserContext.getCurrentUserId();
         log.debug("创建待办: userId={}, title={}", userId, request.getTitle());
@@ -78,12 +74,11 @@ public class TodoController {
      * 更新待办标题
      */
     @ApiOperation("更新待办标题")
-    @PutMapping("/{id}")
-    public ApiResponse<TodoVO> updateTodo(@PathVariable String id,
-                                          @Valid @RequestBody UpdateTodoRequest request) {
+    @PostMapping("/update")
+    public ApiResponse<TodoVO> updateTodo(@Valid @RequestBody UpdateTodoRequest request) {
         Long userId = UserContext.getCurrentUserId();
-        log.debug("更新待办: userId={}, todoId={}, title={}", userId, id, request.getTitle());
-        TodoVO response = todoService.updateTodo(userId, id, request);
+        log.debug("更新待办: userId={}, todoId={}, title={}", userId, request.getId(), request.getTitle());
+        TodoVO response = todoService.updateTodo(userId, request.getId(), request);
         return ApiResponse.success(response);
     }
 
@@ -91,11 +86,11 @@ public class TodoController {
      * 切换完成状态
      */
     @ApiOperation("切换完成状态")
-    @PatchMapping("/{id}/toggle")
-    public ApiResponse<TodoVO> toggleTodo(@PathVariable String id) {
+    @PostMapping("/toggle")
+    public ApiResponse<TodoVO> toggleTodo(@Valid @RequestBody ToggleTodoRequest request) {
         Long userId = UserContext.getCurrentUserId();
-        log.debug("切换待办状态: userId={}, todoId={}", userId, id);
-        TodoVO response = todoService.toggleTodo(userId, id);
+        log.debug("切换待办状态: userId={}, todoId={}", userId, request.getId());
+        TodoVO response = todoService.toggleTodo(userId, request.getId());
         return ApiResponse.success(response);
     }
 
@@ -103,11 +98,11 @@ public class TodoController {
      * 删除待办
      */
     @ApiOperation("删除待办")
-    @DeleteMapping("/{id}")
-    public ApiResponse<Void> deleteTodo(@PathVariable String id) {
+    @PostMapping("/delete")
+    public ApiResponse<Void> deleteTodo(@Valid @RequestBody DeleteTodoRequest request) {
         Long userId = UserContext.getCurrentUserId();
-        log.debug("删除待办: userId={}, todoId={}", userId, id);
-        todoService.deleteTodo(userId, id);
+        log.debug("删除待办: userId={}, todoId={}", userId, request.getId());
+        todoService.deleteTodo(userId, request.getId());
         return ApiResponse.success();
     }
 
@@ -115,7 +110,7 @@ public class TodoController {
      * 清除已完成待办
      */
     @ApiOperation("清除已完成待办")
-    @DeleteMapping("/completed")
+    @PostMapping("/clearCompleted")
     public ApiResponse<ClearCompletedVO> clearCompleted() {
         Long userId = UserContext.getCurrentUserId();
         log.debug("清除已完成待办: userId={}", userId);

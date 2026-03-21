@@ -11,7 +11,7 @@ import lombok.Getter;
 public enum ResponseCodeEnum {
 
     // 成功
-    SUCCESS(0, "success"),
+    SUCCESS(1000, "success"),
 
     // 通用错误码 1001-1006
     RESOURCE_NOT_FOUND(1001, "资源不存在"),

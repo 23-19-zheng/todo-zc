@@ -5,6 +5,7 @@ import com.todo.domain.model.User;
 import com.todo.domain.service.AuthDomainService;
 import com.todo.facade.request.LoginRequest;
 import com.todo.facade.request.RegisterRequest;
+import com.todo.facade.response.LoginResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -52,7 +53,7 @@ class AuthServiceTest {
         when(authDomainService.generateAccessToken(any(), any())).thenReturn("accessToken");
         when(authDomainService.generateRefreshToken(any())).thenReturn("refreshToken");
 
-        var response = authService.register(request);
+        LoginResponse response = authService.register(request);
 
         assertNotNull(response);
         assertEquals("accessToken", response.getToken());
@@ -72,7 +73,7 @@ class AuthServiceTest {
         when(authDomainService.generateAccessToken(any(), any())).thenReturn("accessToken");
         when(authDomainService.generateRefreshToken(any())).thenReturn("refreshToken");
 
-        var response = authService.login(request);
+        LoginResponse response = authService.login(request);
 
         assertNotNull(response);
         assertEquals("accessToken", response.getToken());
